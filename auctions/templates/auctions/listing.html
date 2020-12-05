@@ -1,0 +1,176 @@
+{% extends "auctions/layout.html" %}
+{% load static %}
+
+{% block title %} {{listing.title}} {% endblock %}
+
+{%block style %}
+<link rel="stylesheet" href="{% static 'auctions/main.css' %}">
+<link rel="stylesheet" href="{% static 'auctions/listing.css' %}">
+{% endblock %}
+
+{% block body %}
+
+<section class="listing column element-color container winner" style="position: relative;">
+  <div class="row pb-5">
+    {% if listing.image %}
+    <div class="img p-4 my-axis">
+      <img src="{{listing.image}}" alt="{{listing.title}}">
+    </div>
+    {% endif %}
+    <div class="content-section mb-5 {% if not listing.image %}invalid-img{% endif %}">
+      {% if user.is_authenticated %}
+      <div class="card-header-watchlist">
+        <a href="{% url 'watchlist' listing.id %}"
+          title="{% if listing in request.user.watchlist.all%}Remove from watchlist{% else %}Add to watchlist{% endif %}">
+          <i class="{% if listing in request.user.watchlist.all%}fas{% else %}far{% endif %} fa-heart"></span></i>
+        </a>
+      </div>
+      {% endif %}
+      <div class="content">
+        <span class="date-creator">{{listing.date_time}} | {{listing.category|lower|title}}
+          <br>Created by {{listing.creator}}</span>
+        <h1 class="card-title mt-4 mb-0">{{listing.title}}
+          {% if not listing.active %}
+          <span class="btn back-color-red" title="This auction has been closed">Closed</span>
+          {% endif %}
+        </h1>
+        <p class="card-description mt-4 font-italic">{{listing.description}}</p>
+        <span class="font-weight-bold bid-size h3">
+          ${{highest_bid.bid_price}}
+          {% if listing.bids.all.count != 1%}
+          <small style="text-decoration: line-through;" class="text-muted m-auto">${{listing.price}}</small>
+          {% endif %}
+        </span>
+        <div class="mt-3"><small>{{listing.bids.all.count|add:"-1"}} Bid(s) so far</small></div>
+        {% if user.is_authenticated %}
+        {% if listing.active %}
+        {% if request.user != listing.creator %}
+        <form action="{% url 'bid' listing.id %}" method="POST">
+          {% csrf_token %}
+          <div class="form-group mt-2">
+            <input type="number" class="form-control input-dark" name="bidding_price" placeholder="Enter bid"
+              min="{{highest_bid.bid_price}}" max=99999999 required step=".01" autofocus>
+            <small class="form-text text-muted">Enter a bid greater than current bid price</small>
+          </div>
+          <button type="submit" class="btn btn-dark">Place Bid</button>
+        </form>
+        {% endif %}
+
+        <h5 class="text-center btn-dark p-2 mt-3 winner">
+          {% if request.user == listing.creator %}
+          {% if listing.bids.all.count != 1 %}
+          {{highest_bid.bidder|lower|title}} has made the highest bid
+          {% else %}
+          No bids have been placed so far
+          {% endif %}
+          {% elif request.user == biduser.0.bidder %}
+          You have bidded {{biduser.count}} time(s) on this listing !!
+          {% else %}
+          You will win this auction if your bid is the highest
+          {% endif %}
+        </h5>
+
+        {% if request.user == listing.creator %}
+        <div class="close-auction">
+          <h4 class=" mt-4 mb-0 color-red">Close the Auction</h1>
+            <small class="font-weight-bold">This action will make the highest bidder of this listing the winner
+              and close the auction</small>
+            <br><a href="{% url 'bid' listing.id %}"><button class="btn back-color-red mt-2" style="color: white;">Close
+                Auction</button></a>
+        </div>
+        {% endif %}
+        {% endif %}
+        {% else %}
+        {% if listing.active %}
+        <div>
+          <span class="l-t-s-b text-center py-1 font-weight-bold"><a href="{% url 'login' %}">Login to start
+              bidding </a></span>
+        </div>
+        {% endif %}
+        {% endif %}
+        {% if listing.winner %}
+        <h5 class="text-center back-color p-2 mt-3 winner">
+          {% if request.user == listing.winner %}
+          Congratulations! You have won this listing's auction
+          {% else %}
+          {{listing.winner}} has won this listing auction at ${{highest_bid.bid_price}}
+          {% endif %}
+        </h5>
+        {% endif %}
+
+        {% if not listing.active %}
+        <h6 class=" mt-4 mb-0 color-red text-center font-weight-bold">This Auction has been Closed at
+          {{listing.bids.all.count|add:"-1"}} Bid(s)</h6>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="card-footer-index card-footer">
+    <span class="text-muted d-block text-center">
+      {% if listing.bids.all.count == 1 %}
+      Last Updated {{highest_bid.date}} ago
+      {% else %}
+      Updated Bid Price {{highest_bid.date}} ago by {{highest_bid.bidder}}</span>
+    {% endif %}
+  </div>
+</section>
+
+<section class="container element-color mt-5 winner">
+  <h4 class="title-label py-2 title-changes">Comment Section</h4>
+</section>
+
+
+<section class="element-color container mt-2 p-4">
+  {% if user.is_authenticated %}
+  <form class="clearfix" action="{% url 'comment' listing.id %}" method="POST">
+    <h4>Post a comment:</h4>
+    {% csrf_token %}
+    {{commentForm.content}}
+    <button class="btn btn-dark btn-md float-right my-2">Submit comment</button>
+  </form>
+  {% else %}
+  <div class="mb-4">
+    <span class="l-t-s-b text-center py-1 font-weight-bold"><a href="{% url 'login' %}">Login to Comment </a></span>
+  </div>
+  {% endif %}
+  <h2 class="card-title"><span>{{totalcomments}}</span> Comment(s)</h2>
+  <hr>
+  <div id="comments-wrapper">
+    {% for comment in comments %}
+    <div class="comment clearfix">
+      <div class="comment-details mb-4">
+        <span class="font-weight-bold mr-1">{{comment.commenter}}</span>
+        <small class="font-italic text-muted">{{comment.date_time}} ago</small>
+        <p class="mb-2" style="font-size: 1.2rem;">{{comment.content}}</p>
+        {% if user.is_authenticated %}
+        <label for="{{comment.id}}" class="reply-btn">
+          <h6>reply</h6>
+        </label>
+        <input type="radio" id="{{comment.id}}" name="replyradioform" class="reply-check" style="display: none;">
+        <form action="{% url 'reply' listing.id comment.id %}" method="GET" class="container-replies">
+          <textarea type="text" name="r{{comment.id}}" placeholder="Add a reply" class="replies-input w-75" rows="1"
+            maxlength="400" minlength="1"></textarea>
+          <button class="btn btn-primary btn-sm pull-right w-25 h-100" style="height: 32px; outline: none;"
+            type="submit">Reply</button>
+        </form>
+        {% endif %}
+      </div>
+      <div style="margin-left: 40px;">
+        {% for reply in comment.reply.all %}
+        <div class="comment reply clearfix">
+          <div class="comment-details">
+            <span class="font-weight-bold mr-1">{{reply.commenter}}</span>
+            <small class="font-italic text-muted">{{reply.date_time}} ago </small>
+            <p class="mb-2" style="font-size: 1rem;">{{reply.content}}</p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <hr>
+    {% empty %}
+    <h5 class="text-center btn-dark p-2 mt-3 winner">Be the first to comment on this post</h5>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "auctions/layout.html" %}
+{% load static %}
+{% block title %}Auctions{% endblock %}
+{% block style %}
+<link rel="stylesheet" href="{% static 'auctions/main.css' %}">
+{% endblock %}
+
+
+
+{% block body %}
+<h1 class="title-label">{{stat.0}}
+    <div class="select-category">
+        <form method="POST" action="{% url 'category' stat.1 %}">
+            {% csrf_token %}
+            {{options.category}}
+        </form>
+    </div>
+</h1>
+<div class="container-index">
+    {% for listing in listings %}
+    <div class="card-index">
+        {% if listing.image %}
+        <section class="img">
+            <img src="{{listing.image}}" alt="{{listing.title}}">
+        </section>
+        {% endif %}
+        <section class="content-section {% if not listing.image %}invalid-img{% endif %}">
+            {% if user.is_authenticated %}
+            <div class="card-header-watchlist">
+                <a href="{% url 'watchlist' listing.id %}" title="{% if listing in request.user.watchlist.all%}Remove from watchlist{% else %}Add to watchlist{% endif %}">
+                    <i class="{% if listing in request.user.watchlist.all%}fas{% else %}far{% endif %} fa-heart"></span></i>
+                </a>
+            </div>
+            {% endif %}
+            <div class="content">
+                <span class="date-creator">{{listing.date_time}} | {{listing.category|lower|title}}
+                <br>Created by {{listing.creator}}</span>
+                <h1 class="card-title mt-4 mb-0">{{listing.title}}
+                    {% if not listing.active %}
+                    <br><a href="#"><button class="btn back-color">Closed</button></a>
+                    {% endif %}
+
+                </h1>
+                <p class="card-description mb-5 mt-4 font-italic">{{listing.description|truncatewords:50}}</p>
+            </div>
+            <div class="card-footer-index text-center"><a href="{%url 'listing' listing.id %}" class="view-more">View More</a></div>
+        </section>
+    </div>
+    {% empty %}
+    <h3 class="text-center btn-dark p-2 winner" style="border-radius: 10px;">Nothing to show here</h3>
+    {% endfor %}
+</div>
+{% endblock %}
+

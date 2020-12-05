@@ -1,0 +1,39 @@
+{% extends "auctions/users.html" %}
+
+{% block title %}Register{% endblock %}
+
+{% block titlestatus%}Get Started{% endblock %}
+
+{% block form %}
+<form action="{% url 'register' %}" method="post">
+    {% csrf_token %}
+    <label for="username" class="label-credetials">Username</label>
+    <div class="input-field">
+        <i class="fas fa-user"></i>
+        <input type="text" placeholder="Enter Username*" autofocus class="input-credentials" name="username" required autocomplete="off">
+    </div>
+    <label for="Email Address" class="label-credetials">Email Address</label>
+    <div class="input-field">
+        <i class="fas fa-envelope"></i>
+        <input type="email" placeholder="Enter Email*" class="input-credentials" name="email" required autocomplete="off">
+    </div>
+    <label for="password" class="label-credetials">Password</label>
+    <div class="input-field">
+        <i class="fas fa-lock"></i>
+        <input type="password" placeholder="Enter Password*" class="input-credentials" name="password" required>
+    </div>
+    <label for="Confirm" class="label-credetials">Confirm Password</label>
+    <div class="input-field">
+        <i class="fas fa-lock"></i>
+        <input type="password" placeholder="Confirm Password*" class="input-credentials" name="confirmation" required>
+    </div>
+    <input type="submit" value="Register">
+</form>
+{% if message %}
+<h1 id = "title" style="font-size: 12px; margin-top: 0; text-align: center;color: red;">{{message}}</h1>
+{% endif %}
+{% endblock %}
+
+{% block links %}
+<a href="{% url 'login' %}">Already a user?</a>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <link href="{% static 'auctions/user.css' %}" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/b6f67b378e.js" crossorigin="anonymous"></script> 
+</head>
+<body>
+    <a href="{% url 'index' 'activeListings' %}"><button class="home">HOME</button></a>
+    <div id="login-back">
+        <img id="user" src="{% static 'auctions/user.jpg'%}" alt="USER">
+        <h1 id="title">{% block titlestatus%}{% endblock %}</h1>
+        {% block form %}
+        {% endblock %}
+        <div class="links">
+            {% block links %}
+            {% endblock %}
+        </div>
+    </div>
+</body>
+</html>

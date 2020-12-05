@@ -1,0 +1,34 @@
+{% extends "auctions/users.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block titlestatus%}Login Here{% endblock %}
+
+{% block form %}
+<form action="{% url 'login' %}" method="post">
+    {% csrf_token %}
+    {% if request.GET.next %}
+    <input type="hidden" name="next" value="{{request.GET.next}}">
+    {% endif %}
+    <label for="username" class="label-credetials">Username</label>
+    <div class="input-field">
+        <i class="fas fa-user"></i>
+        <input type="text" placeholder="Enter Username" autofocus class="input-credentials" name="username" required autocomplete="off">
+    </div>
+    <label for="password" class="label-credetials">Password</label>
+    <div class="input-field">
+        <i class="fas fa-lock"></i>
+        <input type="password" placeholder="Enter Password" class="input-credentials" name="password" required>
+    </div>
+    <input type="submit" value="Login">
+</form>
+{% if messages %}
+{% for message in messages %}
+<h1 id = "title" style="font-size: 12px; margin-top: 0; text-align: center; color: red;">{{message|safe}}</h1>
+{% endfor%}
+{% endif %}
+{% endblock %}
+
+{% block links %}
+<a href="{% url 'register' %}">New User?</a>
+{% endblock %}

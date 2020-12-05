@@ -1,0 +1,74 @@
+{% extends "auctions/layout.html" %} {% block active %}create{% endblock %} {% block style %}
+<style>
+    
+    form label {
+        font-size: 12px;
+        margin-bottom: -4px;
+    }
+    
+    form input,
+    #id_description {
+        outline: none;
+        border: none;
+        font-size: 16px;
+        padding: 2px 0 10px 0;
+        border-bottom: solid 1px rgb(192, 191, 191);
+        margin: 4px 0 20px 0;
+        width: 80%;
+    }
+    
+    form input:focus,
+    #id_description:focus {
+        border-bottom: solid 2px #007bff;
+    }
+    
+    #id_description {
+        height: 200px;
+    }
+    
+    #id_category {
+        width: 200px;
+        padding: 6px;
+        font-size: 16px;
+        border-radius: 10px 0px 10px 0;
+        outline: none;
+    }
+    
+    #id_category:focus {
+        border: #007bff solid 2px;
+    }
+    
+</style>
+{% endblock %} {% block body %}
+    <h1 class="text-primary font-weight-bolder mb-4">Create a New Listing</h1>
+    <form action="{% url 'create' %}" method="POST">
+        {% csrf_token %} 
+        <div class="form-group">
+            {{listing_form.title.label_tag}}
+            <br>
+            {{listing_form.title}}
+        </div>
+        <div class="form-group">
+            {{listing_form.description.label_tag}}
+            <br>
+            {{listing_form.description}}
+        </div>
+        <div class="form-group">
+            {{listing_form.price.label_tag}}
+            <br>
+        {{listing_form.price}}
+        </div>
+        <div class="form-group">
+            {{listing_form.image.label_tag}}
+            <br>
+            {{listing_form.image}}
+        </div>
+        <div class="form-group">
+            {{listing_form.category.label_tag}}
+            <br>
+            {{listing_form.category}}
+        </div>
+        <br>
+        <input class="btn btn-primary" style="border-radius: 10px 10px 0 0;" type="submit" value="Add Listing">
+    </form>
+{% endblock %}

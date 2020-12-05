@@ -1,0 +1,14 @@
+{% extends "auctions/layout.html" %}
+{% block title %}
+Error 404
+{% endblock %}
+{% block body %}
+<div class="text-center card w-100 p-4">
+    <span class="display-1 font-weight-bold" style="color: rgb(255, 175, 1);letter-spacing: 5px;">404</span>
+    <h1 class="display-h1 text-bold" style="letter-spacing: 1px;">PAGE NOT FOUND</h1>
+    <h4 class="mt-5 mb-3 lead">Please make sure the spelling is correct </h4>
+    <a href="{% url 'index' 'activeListings' %}"><button class="btn back-color btn-md w-25 ">
+        HOME PAGE
+    </button></a>
+</div> 
+{% endblock %}

@@ -1,0 +1,62 @@
+.card-title span {
+    display: inline-block;
+    margin-top: -8px;
+  }
+
+  .l-t-s-b {
+    margin-top: 10px;
+    font-size: 1.2rem;
+    display: block;
+    color: #007bff;
+  }
+
+  .l-t-s-b>a {
+    text-decoration: underline;
+  }
+
+  .winner{
+    border-radius: 10px;
+  }
+
+  .form-control:focus{
+    border-color: rgb(0, 0, 0);
+    box-shadow: inset 0 1px 1px rgba(250, 192, 1, 0.055), 0 0 8px rgba(0, 0, 0, 0.6);
+  }
+  .reply-btn{
+    color: #007bff;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  .reply-btn:hover{
+    color: #005cbe;
+  }
+  .container-replies{
+    display: none;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    max-width: 800px;
+    margin-left: 30px;
+  }
+  .replies-input{
+    outline: none;
+    border: none;
+    resize: none;
+    border-radius: 10px;
+    padding: 4px 8px;
+  }
+  .container-replies>button{
+    border-radius: 0 10px 10px 0;
+    margin: auto;
+  }
+  .reply-check:checked~.container-replies{
+    display: flex;
+  }
+
+  .title-changes{
+    font-size: 2.2rem;
+  }
+  @media only screen and (max-width: 991px){
+    .title-changes{
+      font-size: 1.8rem;
+    }
+  }
